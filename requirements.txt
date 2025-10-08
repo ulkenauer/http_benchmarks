@@ -1,0 +1,8 @@
+fastapi==0.109.0
+uvicorn[standard]==0.27.1
+grpcio==1.62.0
+grpcio-tools==1.62.0
+aiohttp==3.9.3
+hypercorn==0.14.4  # Для HTTP/2
+python-json-logger==2.0.7  # Для удобного логирования
+protobuf==4.25.3

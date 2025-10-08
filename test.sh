@@ -1,0 +1,1 @@
+k6 run -u 5 -d 10s http_test.js

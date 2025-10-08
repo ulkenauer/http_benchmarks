@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  fastapi-app:
+    build: .
+    # working_dir: /project
+    volumes:
+      - ./:/app
+    ports:
+      - "8000:8000"
+      - "443:443"
+      - "4433:4433"
+    cap_add:
+      - NET_ADMIN  # Даем права на управление сетью
+    environment:
+      - NETWORK_LATENCY=100ms
+      - NETWORK_LOSS=1%
+      - NETWORK_BANDWIDTH=10mbit
+    networks:
+      - test-network
+
+#   # Сервис для нагрузочного тестирования
+#   load-tester:
+#     image: alpine/curl
+#     depends_on:
+#       - fastapi-app
+#     command: >
+#       sh -c "apk add --no-cache wrk &&
+#       wrk -t4 -c100 -d30s http://fastapi-app:8000/api/test"
+#     networks:
+#       - test-network
+
+networks:
+  test-network:
+    driver: bridge

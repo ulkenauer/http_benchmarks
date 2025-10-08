@@ -33,6 +33,4 @@ setup_network
 
 # Запуск FastAPI приложения через hypercorn
 echo "Starting FastAPI application..."
-# hypercorn app:app --bind 0.0.0.0:8000 --workers 2
-# hypercorn http_app:app --config hypercorn.toml --debug --bind "0.0.0.0:443" --keyfile key.pem --certfile cert.pem
 uv run hypercorn http_app:app --config hypercorn.toml --debug --bind "0.0.0.0:443" --keyfile key.pem --certfile cert.pem

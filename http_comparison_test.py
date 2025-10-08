@@ -3,11 +3,11 @@ import time
 import httpx
 import random
 
-async def simple_http2_demo():
+async def simple_http2_demo(iterations):
     """Простой тест, демонстрирующий преимущество HTTP/2"""
     print("🚀 ЗАПУСК ПРОСТОГО ТЕСТА HTTP/1.1 vs HTTP/2")
     print("=" * 50)
-    # return
+
     # Тестируем оба протокола
     for use_http2 in [False, True]:
         protocol = "HTTP/2" if use_http2 else "HTTP/1.1"
@@ -27,9 +27,9 @@ async def simple_http2_demo():
         
         # print(client_kwargs)
         async with httpx.AsyncClient(**client_kwargs) as client:
-            # Создаем 30 запросов ОДНОВРЕМЕННО
+            # Создаем iterations запросов ОДНОВРЕМЕННО
             tasks = []
-            for i in range(300):
+            for i in range(iterations):
                 if i % 2 == 0:
                     tasks.append(client.get("https://localhost/products"))
                 else:
@@ -113,7 +113,7 @@ async def advanced_demo():
 
 if __name__ == "__main__":
     # Простой тест
-    asyncio.run(simple_http2_demo())
+    asyncio.run(simple_http2_demo(300))
     
     # Расширенная демонстрация
     asyncio.run(advanced_demo())

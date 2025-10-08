@@ -4,20 +4,17 @@ WORKDIR /app
 
 # Установка зависимостей
 COPY requirements.txt .
-# RUN pip install --no-cache-dir -r requirements.txt
-# RUN pip install --no-cache-dir -r requirements.txt
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
-# RUN curl -LsSf https://astral.sh/uv/install.sh | sh
-# ENV PATH="/root/.cargo/bin:${PATH}"
 
 # Копирование приложения
 COPY . .
+
 RUN uv sync --frozen
+
 # Установка утилит для сетевого управления
 RUN apt-get update && apt-get install -y \
     iproute2 \
     net-tools \
-    # tc \
     && rm -rf /var/lib/apt/lists/*
 
 # Скрипт для настройки сети

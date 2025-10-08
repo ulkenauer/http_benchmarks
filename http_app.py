@@ -1,3 +1,4 @@
+import asyncio
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 import json
@@ -16,10 +17,12 @@ products = load_products()
 # Эндпоинты
 @app.get("/products", response_class=JSONResponse)
 async def get_products():
+    await asyncio.sleep(0.3)
     return products
 
 @app.get("/products/{product_id}", response_class=JSONResponse)
 async def get_product(product_id: int):
+    await asyncio.sleep(0.2)
     return next((p for p in products if p["id"] == product_id), None)
 
 if __name__ == "__main__":

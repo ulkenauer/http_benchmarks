@@ -3,7 +3,7 @@ FROM python:3.13-slim
 WORKDIR /app
 
 # Установка зависимостей
-COPY requirements.txt .
+# COPY requirements.txt .
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
 # Копирование приложения

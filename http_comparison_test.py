@@ -18,7 +18,7 @@ async def simple_http2_demo(iterations):
             'http2': use_http2,
             'verify': False,
             'limits': httpx.Limits(
-                max_connections=6 if not use_http2 else 1,  # Для HTTP/1.1 - только 1 соединение!
+                max_connections=6 if not use_http2 else 1,  # Для HTTP/2 - только 1 соединение!
                 max_keepalive_connections=6 if not use_http2 else 1,
             )
         }
@@ -51,7 +51,7 @@ async def simple_http2_demo(iterations):
         rps = success_count / total_time
         
         print(f"✅ {protocol}:")
-        print(f"   {success_count}/30 запросов за {total_time:.2f} сек")
+        print(f"   {success_count}/{iterations} запросов за {total_time:.2f} сек")
         print(f"   {rps:.1f} запросов в секунду")
         
         # Для HTTP/1.1 показываем проблему
@@ -60,8 +60,7 @@ async def simple_http2_demo(iterations):
         else:
             print(f"   🚀 HTTP/2: все запросы выполняются ПАРАЛЛЕЛЬНО в одном соединении!")
 
-async def advanced_demo():
-    return
+async def advanced_demo(iterations):
     """Более наглядная демонстрация с визуализацией"""
     print("\n" + "=" * 60)
     print("📊 РАСШИРЕННАЯ ДЕМОНСТРАЦИЯ")
@@ -69,12 +68,12 @@ async def advanced_demo():
     
     for use_http2 in [False, True]:
         protocol = "HTTP/2" if use_http2 else "HTTP/1.1"
-        print(f"\n🎯 {protocol} - выполнение 20 запросов:")
+        print(f"\n🎯 {protocol} - выполнение {iterations} запросов:")
         
         client_kwargs = {
             'http2': use_http2,
             'verify': False,
-            'limits': httpx.Limits(max_connections=10 if not use_http2 else 10)
+            'limits': httpx.Limits(max_connections=6 if not use_http2 else 1)
         }
         
         async with httpx.AsyncClient(**client_kwargs) as client:
@@ -93,11 +92,10 @@ async def advanced_demo():
                 end = time.time()
                 end_times.append(end)
                 print(f"   Запрос {i+1:2d} завершен за {(end-start):.3f}с")
-                print(res)
             
             # Запускаем все запросы одновременно
             start_total = time.time()
-            tasks = [make_request(i) for i in range(600)]
+            tasks = [make_request(i) for i in range(iterations)]
             await asyncio.gather(*tasks)
             total_time = time.time() - start_total
             
@@ -109,18 +107,11 @@ async def advanced_demo():
                 
                 print(f"\n   📈 Общее время: {total_time:.2f} сек")
                 print(f"   ⏱️  Фактическая длительность: {actual_duration:.2f} сек")
-                print(f"   💨 Эффективность: {20/actual_duration:.1f} запр/сек")
+                print(f"   💨 Эффективность: {iterations/actual_duration:.1f} запр/сек")
 
 if __name__ == "__main__":
     # Простой тест
-    asyncio.run(simple_http2_demo(300))
+    asyncio.run(simple_http2_demo(30))
     
     # Расширенная демонстрация
-    asyncio.run(advanced_demo())
-    
-    # print("\n" + "=" * 60)
-    # print("💡 ВЫВОД:")
-    # print("   HTTP/1.1 с 1 соединением: запросы в ОЧЕРЕДИ")
-    # print("   HTTP/2 с 1 соединением: запросы ПАРАЛЛЕЛЬНО")
-    # print("   Это главное преимущество HTTP/2!")
-    # print("=" * 60)
+    asyncio.run(advanced_demo(30))
